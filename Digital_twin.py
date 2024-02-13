@@ -23,9 +23,9 @@ class DigitalTwin:
         self.delta_t = 0.005  # Example value, adjust as needed in seconds
         # Model parameters
         self.g = 9.81  # Acceleration due to gravity (m/s^2)
-        self.l = 0.8   # Length of the pendulum (m)
-        self.c_air = 0.5  # Air friction coefficient
-        self.c_c = 1.1   # Coulomb friction coefficient
+        self.l = 0.34   # Length of the pendulum (m)
+        self.c_air = 0.1  # Air friction coefficient
+        self.c_c = 0.5   # Coulomb friction coefficient
         self.a_m = 2000 # Motor acceleration force tranfer coefficient
         self.future_motor_accelerations = []
         self.future_motor_positions = []
