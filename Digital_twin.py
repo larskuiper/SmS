@@ -182,7 +182,7 @@ class DigitalTwin:
         gravitational_force = -self.g/self.l * np.sin(theta)
         air_friction = -self.c_air * theta_dot
         coulomb_friction = -self.c_c * np.sign(theta_dot)
-        motor_force = self.a_m * self.currentmotor_acceleration
+        motor_force = -self.a_m * self.currentmotor_acceleration
 
         theta_double_dot = gravitational_force + air_friction + coulomb_friction + motor_force
 
