@@ -81,21 +81,21 @@ class DigitalTwin:
 
     def process_data(self):
         """
-        Lab 2: Use the sensor data retured by the function read_data. 
+        Lab 2: Use the sensor data retured by the function read_data.
         The sensor data needs to be represented in the virtual model.
         First the data should be scaled and calibrated,
         Secondly noise should be reduced trough a filtering method.
         Return the processed data sush that it can be used in visualization and recording.
-        Also, transform the current_sensor_motor_position to be acurate. 
+        Also, transform the current_sensor_motor_position to be acurate.
         This means that the encoder value should be scaled to match the displacement in the virtual model.
         """
         self.sensor_theta = 0
         self.current_sensor_motor_position = 0
-        
+
     def start_recording(self, name):
         # If you are working on the bonus assignments then you should also add a columb for actions (and safe those).
         self.recording = True
-        self.file = open('{}.csv'.format(name), 'w', newline='')  
+        self.file = open('{}.csv'.format(name), 'w', newline='')
         self.writer = csv.writer(self.file)
         self.start_time = round(time.time() * 1000)
         self.writer.writerow(["time", "theta", "x_pivot"])
@@ -103,15 +103,15 @@ class DigitalTwin:
     def stop_recording(self):
         self.recording = False
         self.file.close()
-    
+
     def load_recording(self, name):
         self.df = pd.read_csv('{}.csv'.format(name))
         print("recording is loaded")
-    
+
     def recorded_step(self,i):
         a = self.df["time"].pop(i)
         b = self.df["theta"].pop(i)
-        c = self.df["x_pivot"].pop(i)  
+        c = self.df["x_pivot"].pop(i)
         return a, b, c
 
     def perform_action(self, direction, duration):
@@ -132,7 +132,7 @@ class DigitalTwin:
             direction = 1
 
         """
-        Lab 1 & 3 bonus: Model the expected acceleration response of the motor.  
+        Lab 1 & 3 bonus: Model the expected acceleration response of the motor.
         """
         a_m_1 = 0.05
         a_m_2 = 0.05
@@ -143,24 +143,52 @@ class DigitalTwin:
             if t <= t1:
                 c = -4*direction*a_m_1/(t1*t1) * t * (t-t1)
             elif t < t2 and t > t1:
-                c = 0 
+                c = 0
             elif t >= t2:
                 c = 4*direction*a_m_2/(t2_d*t2_d) * (t-t2) * (t-duration)
-            
+
             self.future_motor_accelerations.append(c)
-        
+
         _velocity = it.cumtrapz(self.future_motor_accelerations,initial=0)
         self.future_motor_positions = list(it.cumtrapz(_velocity,initial=0))
-    
-    
+
+
     def get_theta_double_dot(self, theta, theta_dot):
         """
-        Lab 1: Model the angular acceleration (theta_double_dot) 
-        as a function of theta, theta_dot and the self.currentmotor_acceleration. 
-        You should include the following constants aswell: c_air, c_c, a_m, l and g. 
+        Lab 1: Model the angular acceleration (theta_double_dot)
+        as a function of theta, theta_dot and the self.currentmotor_acceleration.
+        You should include the following constants aswell: c_air, c_c, a_m, l and g.
+
+        Solution:
+        theta_double_dot is the angular acceleration of the pendulum.
+        -self.g/self.l * np.sin(theta) is the gravitational force
+        -self.c_air * theta_dot is the air friction
+        -self.c_c * np.sign(theta_dot) is the Coulomb friction
+        self.a_m * self.currentmotor_acceleration is the motor force
+
+        the sum of these forces is the angular acceleration of the pendulum.
+        where:
+        self.g is the acceleration due to gravity (m/s^2)
+        self.l is the length of the pendulum (m)
+        self.c_air is the air friction coefficient
+        self.c_c is the Coulomb friction coefficient
+        self.a_m is the motor acceleration force transfer coefficient
+        theta is the angle of the pendulum (rad)
+        theta_dot is the angular velocity of the pendulum (rad/s)
+        self.currentmotor_acceleration is the current motor acceleration (m/s^2)
+
         """
         # Implement your model here.
-        return None
+        gravitational_force = -self.g/self.l * np.sin(theta)
+        air_friction = -self.c_air * theta_dot
+        coulomb_friction = -self.c_c * np.sign(theta_dot)
+        motor_force = self.a_m * self.currentmotor_acceleration
+
+        theta_double_dot = gravitational_force + air_friction + coulomb_friction + motor_force
+
+        return theta_double_dot
+
+        # return None
 
     def step(self):
         # Get the predicted motor acceleration for the next step and the shift in x_pivot
@@ -176,7 +204,7 @@ class DigitalTwin:
         self.steps += 1
 
         return self.theta, self.theta_dot, self.x_pivot
-        
+
 
     def draw_line_and_circles(self, colour, start_pos, end_pos, line_width=5, circle_radius=9):
         pygame.draw.line(self.screen, colour, start_pos, end_pos, line_width)
@@ -185,7 +213,7 @@ class DigitalTwin:
 
     def draw_pendulum(self, colour ,x, y, x_pivot):
         self.draw_line_and_circles(colour, [x_pivot+500, 400], [y+x_pivot+500, x+400])
-        
+
     def render(self, theta, x_pivot):
         self.screen.fill((255, 255, 255))
         # Drawing length of the pendulum
