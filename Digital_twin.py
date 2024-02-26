@@ -20,7 +20,7 @@ class DigitalTwin:
         self.theta_dot = 0.
         self.theta_double_dot = 0.
         self.x_pivot = 0
-        self.delta_t = 0.005  # Example value, adjust as needed in seconds
+        self.delta_t = 0.025  # Example value, adjust as needed in seconds
         # Model parameters
         self.g = 9.81  # Acceleration due to gravity (m/s^2)
         self.l = 0.34   # Length of the pendulum (m)
