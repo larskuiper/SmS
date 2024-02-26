@@ -1,18 +1,22 @@
-import pygame
-import serial
-import numpy as np
 import csv
 import math
-import scipy.integrate as it
 import time
+
+import numpy as np
 import pandas as pd
+import pygame
+import scipy.integrate as it
+import serial
+
 
 class DigitalTwin:
     def __init__(self):
         # Initialize Pygame parameters
         self.screen = None
         # Initialize serial communication parameters
+
         self.ser = None
+
         self.device_connected = False
         # State configuration parameters
         self.steps = 0
@@ -65,6 +69,9 @@ class DigitalTwin:
         print("Connected to: " + self.ser.portstr)
 
     def read_data(self):
+        if not self.device_connected:
+            self.writer.writerow([round(time.time() * 1000)-self.start_time, self.theta, self.currentmotor_acceleration])
+            return
         line = self.ser.readline()
         line = line.decode("utf-8")
         try:
@@ -85,12 +92,17 @@ class DigitalTwin:
         The sensor data needs to be represented in the virtual model.
         First the data should be scaled and calibrated,
         Secondly noise should be reduced trough a filtering method.
-        Return the processed data sush that it can be used in visualization and recording.
+        Return the processed data such that it can be used in visualization and recording.
         Also, transform the current_sensor_motor_position to be acurate.
         This means that the encoder value should be scaled to match the displacement in the virtual model.
         """
-        self.sensor_theta = 0
-        self.current_sensor_motor_position = 0
+        # Implement your model here.
+        self.sensor_theta = self.sensor_theta * 0.001
+        self.current_sensor_motor_position = self.current_sensor_motor_position * 0.001
+
+        return self.sensor_theta, self.current_sensor_motor_position
+
+
 
     def start_recording(self, name):
         # If you are working on the bonus assignments then you should also add a columb for actions (and safe those).

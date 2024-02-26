@@ -1,8 +1,9 @@
+#%%
 import matplotlib.pyplot as plt
 import pandas as pd
 
 # Path to the CSV file
-csv_file_path = 'test_data.csv'
+csv_file_path = 'test_data2.csv'
 
 # Read the data from the CSV file
 df = pd.read_csv(csv_file_path)
@@ -10,6 +11,7 @@ df = pd.read_csv(csv_file_path)
 # Convert 'time' from milliseconds to seconds for plotting
 df['time_seconds'] = df['time'] / 1000
 
+#%%
 # Plot the data
 plt.figure(figsize=(10, 5))
 plt.plot(df['time_seconds'], df['theta'])
