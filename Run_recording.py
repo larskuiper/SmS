@@ -31,6 +31,7 @@ theta_original = []
 theta_filtered_median = []
 theta_filtered_ema = []
 theta_filtered_kalman = []
+pref_sim_time = 0
 
 # Exponential Moving Average (EMA) setup
 alpha = 0.3  # Smoothing factor for EMA
@@ -44,7 +45,7 @@ buffer = np.zeros(kernel_size)  # Initialize buffer with zeros
 kalman_filter_theta = KalmanFilter(process_variance=1e-5, measurement_variance=1e-5, estimated_measurement_variance=1e-5)
         
 if __name__=='__main__':
-        digital_twin.load_recording("test_data")
+        digital_twin.load_recording("test_3")
         
         for i in range(len(digital_twin.df)-1):
             #replay the recording:
@@ -68,10 +69,10 @@ if __name__=='__main__':
             theta_filtered_ema.append(filtered_ema)
             theta_filtered_kalman.append(filtered_kalman)
             #Uncoment this section and change theta to a filtered theta
-            #digital_twin.render(theta, x_pivot)
-            #delay = (sim_time - pref_sim_time)/1000
-            #time.sleep(delay)
-            #pref_sim_time = sim_time
+            digital_twin.render(filtered_ema, x_pivot)
+            delay = (sim_time - pref_sim_time)/1000
+            time.sleep(delay)
+            pref_sim_time = sim_time
             
 
         plt.figure(figsize=(12, 6))
