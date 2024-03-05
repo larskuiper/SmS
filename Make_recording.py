@@ -13,7 +13,8 @@ if __name__=='__main__':
         # You can test a sequence of actions (find the action map in the digitalTwin).
         # Each action is performed after 200ms so that the actions do not overlap in time.
         # Can also use your keyboard to manually control the system.
-        actions =  [3, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        # actions =  [3, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        actions =  [0, 0, 8, 4, 0, 8, 0, 4, 0, 8, 0, 0, 4, 0, 0, 0]
         # digital_twin.connect_device()
         digital_twin.start_recording("test_data2")
         while running:
@@ -25,6 +26,7 @@ if __name__=='__main__':
                 digital_twin.perform_action(direction, duration)
 
             digital_twin.read_data()
+            digital_twin.process_data()
             theta, theta_dot, x_pivot = digital_twin.step()
             digital_twin.render(theta, x_pivot)
             time.sleep(digital_twin.delta_t)

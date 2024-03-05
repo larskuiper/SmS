@@ -8,6 +8,8 @@ import pygame
 import scipy.integrate as it
 import serial
 
+# from Run_recording import KalmanFilter
+
 
 class DigitalTwin:
     def __init__(self):
@@ -96,10 +98,15 @@ class DigitalTwin:
         Also, transform the current_sensor_motor_position to be acurate.
         This means that the encoder value should be scaled to match the displacement in the virtual model.
         """
-        # Implement your model here.
+        #Scale and calibrate the sensor data
         self.sensor_theta = self.sensor_theta * 0.001
         self.current_sensor_motor_position = self.current_sensor_motor_position * 0.001
 
+        #sensor filtering uisng kalman filter
+        # kalman_filter_theta = KalmanFilter(process_variance=1e-5, measurement_variance=1e-5, estimated_measurement_variance=1e-5)
+        # self.sensor_theta = kalman_filter_theta.update(self.sensor_theta)
+
+        #return the processed data
         return self.sensor_theta, self.current_sensor_motor_position
 
 

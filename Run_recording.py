@@ -1,8 +1,11 @@
 import time
-from Digital_twin import DigitalTwin
+
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import medfilt
+
+from Digital_twin import DigitalTwin
+
 # Before starting run pip install -r requirements.txt
 
 digital_twin = DigitalTwin()
@@ -42,10 +45,10 @@ buffer = np.zeros(kernel_size)  # Initialize buffer with zeros
 
 # Initialize the Kalman Filter for theta (Adjust the variances as needed)
 kalman_filter_theta = KalmanFilter(process_variance=1e-5, measurement_variance=1e-5, estimated_measurement_variance=1e-5)
-        
+
 if __name__=='__main__':
-        digital_twin.load_recording("test_data")
-        
+        digital_twin.load_recording("test_data2")
+
         for i in range(len(digital_twin.df)-1):
             #replay the recording:
             sim_time, theta, x_pivot = digital_twin.recorded_step(i)
@@ -72,7 +75,7 @@ if __name__=='__main__':
             #delay = (sim_time - pref_sim_time)/1000
             #time.sleep(delay)
             #pref_sim_time = sim_time
-            
+
 
         plt.figure(figsize=(12, 6))
         plt.plot(theta_original, label='Original Theta')
